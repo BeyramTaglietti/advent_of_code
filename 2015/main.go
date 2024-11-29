@@ -21,7 +21,8 @@ func main() {
 	// day5.SolveP1()
 	// day5.SolveP2()
 	// day6.SolveP2()
-	day7.SolveP1()
+	// day7.SolveP1()
+	day7.SolveP2()
 
 	elapsed := time.Since(now)
 

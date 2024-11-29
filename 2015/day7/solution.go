@@ -30,6 +30,28 @@ func SolveP1() {
 		log.Fatalf("File could not be found")
 	}
 
+	circuit := buildCircuit(lines)
+
+	key := "a"
+	fmt.Printf("value of key %s is %d\n", key, getValue(key, circuit))
+}
+
+func SolveP2() {
+	lines, err := utils.ReadFile("day7/input.txt")
+	if err != nil {
+		log.Fatalf("File could not be found")
+	}
+
+	circuit := buildCircuit(lines)
+
+	// code so good only need to change one line to solve part 2 😭
+	circuit["b"] = signal{from: []string{"956"}, fromOperation: ASSIGNMENT}
+
+	key := "a"
+	fmt.Printf("value of key %s is %d\n", key, getValue(key, circuit))
+}
+
+func buildCircuit(lines []string) map[string]signal {
 	circuit := make(map[string]signal)
 
 	for _, line := range lines {
@@ -57,10 +79,7 @@ func SolveP1() {
 		}
 	}
 
-	key := "a"
-	fmt.Printf("value of key %s is %d\n", key, getValue(key, circuit))
-	fmt.Println("finished")
-
+	return circuit
 }
 
 func getValue(key string, circuit map[string]signal) uint16 {
