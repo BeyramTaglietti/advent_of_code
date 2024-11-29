@@ -4,7 +4,6 @@ import (
 	"aoc2022/utils"
 	"fmt"
 	"log"
-	"math"
 	"regexp"
 	"strconv"
 	"strings"
@@ -120,18 +119,6 @@ func getCmd(line string) (command, coordinate, coordinate, error) {
 	}
 
 	return turn_on, fromPosition, toPosition, fmt.Errorf("Could not get the command at line %s\n", line)
-}
-
-func getArea(from coordinate, to coordinate) int {
-	width := math.Abs(float64(from.x-to.x)) + 1
-	height := math.Abs(float64(from.y-to.y)) + 1
-
-	fmt.Println("width:", width)
-	fmt.Println("height:", height)
-
-	area := int(width * height)
-
-	return area
 }
 
 func workOnBasicLight(cmd command, light *basicLight) {
