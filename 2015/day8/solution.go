@@ -3,14 +3,10 @@ package day8
 import (
 	"aoc2022/utils"
 	"fmt"
-	"log"
 )
 
 func SolveP1() {
-	lines, err := utils.ReadFile("day8/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day8/input.txt")
 
 	totalMemory := 0
 	totalChars := 0
@@ -26,10 +22,7 @@ func SolveP1() {
 }
 
 func SolveP2() {
-	lines, err := utils.ReadFile("day8/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day8/input.txt")
 
 	totalMemory := 0
 

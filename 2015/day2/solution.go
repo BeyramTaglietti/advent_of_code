@@ -11,11 +11,7 @@ import (
 )
 
 func SolveP1() {
-	lines, err := utils.ReadFile("day2/input.txt")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	lines := utils.ReadFile("day2/input.txt")
 
 	totalFeet := 0
 
@@ -32,11 +28,7 @@ func SolveP1() {
 }
 
 func SolveP2() {
-	lines, err := utils.ReadFile("day2/input.txt")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	lines := utils.ReadFile("day2/input.txt")
 
 	totalRibbonArea := 0
 

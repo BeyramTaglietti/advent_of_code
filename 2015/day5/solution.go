@@ -3,16 +3,11 @@ package day5
 import (
 	"aoc2022/utils"
 	"fmt"
-	"log"
 	"strings"
 )
 
 func SolveP1() {
-
-	lines, err := utils.ReadFile("day5/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day5/input.txt")
 
 	niceWords := 0
 
@@ -26,11 +21,7 @@ func SolveP1() {
 }
 
 func SolveP2() {
-
-	lines, err := utils.ReadFile("day5/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day5/input.txt")
 
 	niceWords := 0
 

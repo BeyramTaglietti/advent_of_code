@@ -33,10 +33,7 @@ type advancedLight struct {
 }
 
 func SolveP1() {
-	lines, err := utils.ReadFile("day6/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day6/input.txt")
 
 	board := createBoard()
 	for _, line := range lines {
@@ -56,10 +53,7 @@ func SolveP1() {
 }
 
 func SolveP2() {
-	lines, err := utils.ReadFile("day6/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day6/input.txt")
 
 	board := createAdvancedBoard()
 	for _, line := range lines {

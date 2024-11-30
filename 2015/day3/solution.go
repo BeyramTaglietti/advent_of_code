@@ -3,7 +3,6 @@ package day3
 import (
 	"aoc2022/utils"
 	"fmt"
-	"log"
 	"slices"
 )
 
@@ -18,10 +17,7 @@ func SolveP1() {
 		y: 0,
 	}
 
-	lines, err := utils.ReadFile("day3/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day3/input.txt")
 
 	var housesVisited []coordinate = []coordinate{
 		sleighPosition,
@@ -45,10 +41,7 @@ func SolveP2() {
 		y: 0,
 	}
 
-	lines, err := utils.ReadFile("day3/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day3/input.txt")
 
 	var housesVisitedBySanta []coordinate = []coordinate{
 		santasSleighPosition,

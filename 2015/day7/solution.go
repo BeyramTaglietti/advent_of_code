@@ -3,7 +3,6 @@ package day7
 import (
 	"aoc2022/utils"
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 )
@@ -25,10 +24,7 @@ type signal struct {
 }
 
 func SolveP1() {
-	lines, err := utils.ReadFile("day7/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day7/input.txt")
 
 	circuit := buildCircuit(lines)
 
@@ -37,10 +33,7 @@ func SolveP1() {
 }
 
 func SolveP2() {
-	lines, err := utils.ReadFile("day7/input.txt")
-	if err != nil {
-		log.Fatalf("File could not be found")
-	}
+	lines := utils.ReadFile("day7/input.txt")
 
 	circuit := buildCircuit(lines)
 

@@ -3,15 +3,10 @@ package day1
 import (
 	"aoc2022/utils"
 	"fmt"
-	"log"
 )
 
 func SolveP1() {
-	lines, err := utils.ReadFile("day1/input.txt")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	lines := utils.ReadFile("day1/input.txt")
 
 	currentFloor := 0
 	for _, r := range lines[0] {
@@ -27,11 +22,7 @@ func SolveP1() {
 }
 
 func SolveP2() {
-	lines, err := utils.ReadFile("day1/input.txt")
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
+	lines := utils.ReadFile("day1/input.txt")
 
 	currentFloor := 0
 	var firstNegativeFloor *int = nil
