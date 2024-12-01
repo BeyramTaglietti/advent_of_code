@@ -1,7 +1,7 @@
 package day3
 
 import (
-	"aoc2022/utils"
+	"aoc2015/utils"
 	"fmt"
 	"slices"
 )

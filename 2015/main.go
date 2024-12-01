@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aoc2022/day10"
+	"aoc2015/day10"
 	"fmt"
 	"time"
 )
@@ -32,5 +32,5 @@ func main() {
 
 	elapsed := time.Since(now)
 
-	fmt.Printf("Elapsed time: %d μs\n", elapsed.Microseconds())
+	fmt.Printf("Elapsed time: %d μs / %d ms\n", elapsed.Microseconds(), elapsed.Milliseconds())
 }

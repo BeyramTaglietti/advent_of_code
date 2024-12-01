@@ -1,7 +1,7 @@
 package day7
 
 import (
-	"aoc2022/utils"
+	"aoc2015/utils"
 	"fmt"
 	"strconv"
 	"strings"

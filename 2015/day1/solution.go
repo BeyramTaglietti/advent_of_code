@@ -1,7 +1,7 @@
 package day1
 
 import (
-	"aoc2022/utils"
+	"aoc2015/utils"
 	"fmt"
 )
 
