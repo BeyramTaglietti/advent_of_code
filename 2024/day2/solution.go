@@ -35,25 +35,27 @@ func SolveP2() {
 }
 
 func isReportSafe(report []uint16, allowDampener bool) bool {
-	incrSafely := isIncreasingSafely(report, allowDampener)
-	if incrSafely {
+
+	if isIncreasingSafely(report, true, allowDampener) {
 		return true
 	}
 
-	reversedList := slices.Clone(report)
-	slices.Reverse(reversedList)
-	decrSafely := isIncreasingSafely(reversedList, allowDampener)
-
-	return decrSafely
+	return isIncreasingSafely(report, false, allowDampener)
 }
 
-func isIncreasingSafely(report []uint16, allowDampener bool) bool {
+func isIncreasingSafely(report []uint16, increasing bool, allowDampener bool) bool {
 
 	prevNumber := report[0]
 
 	for idx, level := range report[1:] {
 
-		difference := level - prevNumber
+		var difference uint16
+
+		if increasing {
+			difference = level - prevNumber
+		} else {
+			difference = prevNumber - level
+		}
 
 		if difference < 1 || difference > 3 {
 
@@ -62,14 +64,14 @@ func isIncreasingSafely(report []uint16, allowDampener bool) bool {
 				firstTry := slices.Clone(report)
 				firstTry = slices.Delete(firstTry, idx, idx+1)
 
-				if isIncreasingSafely(firstTry, false) {
+				if isIncreasingSafely(firstTry, increasing, false) {
 					return true
 				}
 
 				secondTry := slices.Clone(report)
 				secondTry = slices.Delete(secondTry, idx+1, idx+2)
 
-				return isIncreasingSafely(secondTry, false)
+				return isIncreasingSafely(secondTry, increasing, false)
 
 			} else {
 				return false
