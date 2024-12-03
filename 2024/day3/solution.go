@@ -12,7 +12,7 @@ import (
 func SolveP1() {
 	lines := utils.ReadFile("./day3/input.txt")
 
-	pattern := `mul\(d+,d+\)`
+	pattern := `mul\(\d+,\d+\)`
 
 	total := 0
 	for _, line := range lines {
