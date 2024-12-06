@@ -34,9 +34,7 @@ func SolveP1() {
 			isValid := true
 
 			for i := 0; i < len(numbers)-1; i++ {
-				containsInvalidValues := listContainsInvalidValues(rulesMap[numbers[i]], slices.Concat(
-					numbers[i+1:],
-				))
+				containsInvalidValues, _ := listContainsInvalidValues(rulesMap[numbers[i]], numbers[i+1:])
 
 				if containsInvalidValues {
 					isValid = false
@@ -55,6 +53,53 @@ func SolveP1() {
 
 	fmt.Println("sum resulted in", sum)
 
+}
+
+func SolveP2() {
+	lines := utils.ReadFile("./day5/input.txt")
+
+	rulesParsed := false
+
+	rulesMap := make(map[int][]int)
+
+	sum := 0
+
+	for _, line := range lines {
+		if line == "" {
+			rulesParsed = true
+			continue
+		}
+
+		if !rulesParsed {
+			n1, n2 := parseOrderRules(line)
+
+			rulesMap[n2] = append(rulesMap[n2], n1)
+		} else {
+			numbers := parseUpdateOrder(line)
+
+			valid := true
+
+			for i := 0; i < len(numbers)-1; i++ {
+				valuesToCheck := numbers[i+1:]
+				containsInvalidValues, invalidValueIndex := listContainsInvalidValues(rulesMap[numbers[i]], valuesToCheck)
+
+				if containsInvalidValues {
+					utils.MoveListElement(numbers, slices.Index(numbers, valuesToCheck[invalidValueIndex]), i)
+					i = -1 // start from the beginning
+					valid = false
+				}
+
+			}
+
+			if !valid {
+				middleValue := math.Floor(float64(len(numbers) / 2))
+				sum += numbers[int(middleValue)]
+			}
+
+		}
+	}
+
+	fmt.Println("sum of the fixed rows:", sum)
 }
 
 func parseOrderRules(line string) (int, int) {
@@ -78,12 +123,12 @@ func parseUpdateOrder(line string) []int {
 	return numbers
 }
 
-func listContainsInvalidValues(rules []int, list []int) bool {
-	for _, number := range list {
+func listContainsInvalidValues(rules []int, list []int) (containsInvalidValue bool, invalidValueIdx int) {
+	for idx, number := range list {
 		if slices.Contains(rules, number) {
-			return true
+			return true, idx
 		}
 	}
 
-	return false
+	return false, 0
 }

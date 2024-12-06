@@ -22,3 +22,18 @@ func ReadFile(filename string) []string {
 
 	return lines
 }
+
+func MoveListElement[s ~[]E, E int | string](list s, from int, to int) s {
+	if from < 0 || from >= len(list) {
+		log.Fatalf("Invalid 'from' index: %d", from)
+	}
+	if to < 0 || to >= len(list) {
+		log.Fatalf("Invalid 'to' index: %d", to)
+	}
+
+	element := list[from]
+	list = append(list[:from], list[from+1:]...)
+	list = append(list[:to], append([]E{element}, list[to:]...)...)
+
+	return list
+}
