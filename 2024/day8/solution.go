@@ -45,23 +45,20 @@ func SolveP1() {
 		maxY: len(lines),
 	}
 
-	totalAntennas := []point{}
+	// using a map so that values are unique
+	totalAntinodes := make(map[point]bool)
+
 	for _, v := range antennasMap {
 		antiNodes := []point{}
 		for idx, anten := range v {
 			antiNodes = slices.Concat(antiNodes, findAntennasCouples(anten, v[idx+1:], []point{}, mapLimits, false))
 		}
 
-		// unique anti nodes
-		antiNodes = slices.DeleteFunc(antiNodes, func(p point) bool {
-			if slices.Contains(totalAntennas, p) {
-				return true
-			}
-			return false
-		})
+		for _, antiNode := range antiNodes {
+			totalAntinodes[antiNode] = true
+		}
 
-		totalAntennas = slices.Concat(totalAntennas, antiNodes)
-
+		// this is to print the final map to the console
 		for _, node := range antiNodes {
 			if _, exists := grid[node]; !exists {
 				grid[node] = '#'
@@ -70,7 +67,7 @@ func SolveP1() {
 	}
 
 	printMap(grid, mapLimits)
-	fmt.Println("\nAntinodes count", len(totalAntennas))
+	fmt.Println("\nAntinodes count", len(totalAntinodes))
 }
 
 func SolveP2() {
@@ -83,24 +80,23 @@ func SolveP2() {
 		maxY: len(lines),
 	}
 
-	totalAntinodes := []point{}
+	// using a map so that values are unique
+	totalAntinodes := make(map[point]bool)
+
 	for _, v := range antennasMap {
 		antiNodes := []point{}
 		for idx, anten := range v {
 			antiNodes = slices.Concat(antiNodes, findAntennasCouples(anten, v[idx+1:], []point{}, mapLimits, true))
 		}
 
+		// add the antennas position also as stated by the puzzle description
 		antiNodes = slices.Concat(antiNodes, v)
 
-		// unique anti nodes
-		antiNodes = slices.DeleteFunc(antiNodes, func(p point) bool {
-			if slices.Contains(totalAntinodes, p) {
-				return true
-			}
-			return false
-		})
+		for _, antiNode := range antiNodes {
+			totalAntinodes[antiNode] = true
+		}
 
-		totalAntinodes = slices.Concat(totalAntinodes, antiNodes)
+		// this is to print the final map to the console
 		for _, node := range antiNodes {
 			if _, exists := grid[node]; !exists {
 				grid[node] = '#'
