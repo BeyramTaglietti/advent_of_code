@@ -126,16 +126,16 @@ func SolveP2() {
 	mutex := sync.Mutex{}
 
 	for _, visitedCell := range visitedCells {
-		go func() {
+		go func(vc coordinate) {
 			defer wg.Done()
 			copyMap := make(map[coordinate]cell)
 			copyMap, _ = createMap(lines)
 
-			if visitedCell == guard.coordinate {
+			if vc == guard.coordinate {
 				return
 			}
 
-			copyMap[visitedCell] = cell{visited: 0, obstructs: true}
+			copyMap[vc] = cell{visited: 0, obstructs: true}
 
 			doesLoop = moveGuard(guard, &copyMap)
 
@@ -144,7 +144,7 @@ func SolveP2() {
 				numberOfLoops++
 				mutex.Unlock()
 			}
-		}()
+		}(visitedCell)
 	}
 
 	wg.Wait()
