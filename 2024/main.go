@@ -10,7 +10,7 @@ func main() {
 	now := time.Now()
 
 	// Run the solution
-	day7.SolveP1()
+	day7.SolveP2()
 
 	elapsed := time.Since(now)
 
