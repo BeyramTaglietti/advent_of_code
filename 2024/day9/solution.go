@@ -3,6 +3,7 @@ package day9
 import (
 	"aoc2024/utils"
 	"fmt"
+	"slices"
 	"strconv"
 )
 
@@ -14,7 +15,7 @@ func SolveP1() {
 	puzzle := lines[0]
 	fmt.Println("puzzle input: ", puzzle)
 
-	hardDisk := mapHardDisk(puzzle)
+	hardDisk, _ := mapHardDisk(puzzle)
 	fmt.Println("hardDisk before: ", hardDisk)
 
 	hardDisk = emptySpace(hardDisk)
@@ -24,27 +25,21 @@ func SolveP1() {
 	fmt.Println("checksum: ", checksum)
 }
 
-func mapHardDisk(puzzle string) []int {
-	hardDisk := []int{}
+func SolveP2() {
+	lines := utils.ReadFile("./day9/input.txt")
 
-	for idx, value := range puzzle {
-		numValue, _ := strconv.Atoi(string(value))
+	puzzle := lines[0]
+	fmt.Println("puzzle input: ", puzzle)
 
-		isSpace := idx%2 != 0
+	hardDisk, hardDiskMap := mapHardDisk(puzzle)
+	fmt.Println("hardDisk before: ", hardDisk)
+	fmt.Println("hardDiskMap: ", hardDiskMap)
 
-		var valToAppend int
-		if isSpace {
-			valToAppend = space
-		} else {
-			valToAppend = idx / 2
-		}
+	hardDisk = emptySpaceWithoutFragmentation(hardDisk, hardDiskMap)
+	fmt.Println("hardDisk after: ", hardDisk)
 
-		for i := 0; i < numValue; i++ {
-			hardDisk = append(hardDisk, valToAppend)
-		}
-	}
-
-	return hardDisk
+	checksum := calculateFileSystemChecksum(hardDisk)
+	fmt.Println("checksum: ", checksum)
 }
 
 func getLastNonEmptyValue(disk []int) (value, idxOfvalue int) {
@@ -87,10 +82,133 @@ func emptySpace(disk []int) []int {
 	return emptiedDisk
 }
 
+type hardDiskMap map[int]hardDiskValue
+
+type hardDiskValue struct {
+	value int
+	idx   int
+}
+
+func mapHardDisk(puzzle string) ([]int, hardDiskMap) {
+	hardDisk := []int{}
+	hardDiskMap := make(hardDiskMap)
+
+	for idx, value := range puzzle {
+		numValue, _ := strconv.Atoi(string(value))
+
+		isSpace := idx%2 != 0
+
+		var valToAppend int
+		if isSpace {
+			valToAppend = space
+		} else {
+			valToAppend = idx / 2
+		}
+
+		if !isSpace {
+			hardDiskMap[valToAppend] = hardDiskValue{value: numValue, idx: -1}
+		}
+		for i := 0; i < numValue; i++ {
+			hardDisk = append(hardDisk, valToAppend)
+		}
+
+	}
+
+	for idx, value := range hardDisk {
+		if value != space {
+			if hardDiskMap[value].idx == -1 {
+				val := hardDiskMap[value]
+				val.idx = idx
+				hardDiskMap[value] = val
+			}
+		}
+	}
+
+	return hardDisk, hardDiskMap
+}
+
+func getNextEmptyValue(idx int, disk []int, byteLength int, byteCurrentPosition int) (pos int, posFound bool) {
+
+	if idx == len(disk) {
+		return 0, false
+	}
+
+	foundPos := false
+	position := 0
+	spaceLength := 0
+	for i := idx; i < len(disk); i++ {
+		if disk[i] == space {
+			if !foundPos {
+				position = i
+				foundPos = true
+			}
+
+			spaceLength++
+		} else if foundPos {
+			break
+		}
+	}
+
+	if spaceLength < byteLength || position > byteCurrentPosition {
+		return getNextEmptyValue(position+spaceLength, disk, byteLength, byteCurrentPosition)
+	}
+
+	return position, true
+}
+
+func removeByteFromDisk(disk *[]int, byteToRemove int) {
+	for idx, value := range *disk {
+
+		if value == byteToRemove {
+			(*disk)[idx] = space
+		} else {
+			continue
+		}
+	}
+}
+
+// without fragmenting the disk
+func emptySpaceWithoutFragmentation(disk []int, diskMap hardDiskMap) []int {
+
+	type bytes struct {
+		idx   int
+		len   int
+		value int
+	}
+
+	diskMapList := []bytes{}
+	for key, value := range diskMap {
+		diskMapList = append(diskMapList, bytes{idx: value.idx, len: value.value, value: key})
+	}
+
+	// reverse sort by value
+	slices.SortFunc(diskMapList, func(a, b bytes) int {
+		return b.value - a.value
+	})
+
+	for _, byteToMove := range diskMapList {
+		pos, posFound := getNextEmptyValue(0, disk, byteToMove.len, byteToMove.idx)
+		if !posFound {
+			continue
+		}
+
+		removeByteFromDisk(&disk, byteToMove.value)
+
+		for p := range byteToMove.len {
+			disk[pos+p] = byteToMove.value
+		}
+	}
+
+	//6636608781232
+	return disk
+}
+
 func calculateFileSystemChecksum(disk []int) int {
 	sum := 0
 	for idx, value := range disk {
-		sum += value * idx
+		if value != space {
+			sum += value * idx
+		}
 	}
 
 	return sum
