@@ -26,18 +26,35 @@ func SolveP1() {
 	for x, line := range lines {
 		for y, char := range line {
 			if char == '0' {
-				fmt.Println("found 0")
 				foundTrailHeads := createTrail([]point{{x: x, y: y}}, grid)
 				for _, head := range foundTrailHeads {
 					trailsFound = append(trailsFound, trail{startingPoint: point{x: x, y: y}, endingPoint: head})
 				}
-
-				fmt.Println("trailsFound:", trailsFound)
 			}
 		}
 	}
 
 	fmt.Println("unique trails found:", findUniqueTrails(trailsFound))
+}
+
+func SolveP2() {
+	lines := utils.ReadFile("./day10/input.txt")
+
+	grid := createGrid(lines)
+
+	trailsFound := []trail{}
+	for x, line := range lines {
+		for y, char := range line {
+			if char == '0' {
+				foundTrailHeads := createTrail([]point{{x: x, y: y}}, grid)
+				for _, head := range foundTrailHeads {
+					trailsFound = append(trailsFound, trail{startingPoint: point{x: x, y: y}, endingPoint: head})
+				}
+			}
+		}
+	}
+
+	fmt.Println("trails score found:", len(trailsFound))
 }
 
 func createGrid(lines []string) map[point]int {
@@ -76,9 +93,6 @@ func findNextPoints(p point, grid map[point]int) []point {
 }
 
 func createTrail(points []point, grid map[point]int) []point {
-
-	fmt.Println("creating trail with points:", points)
-
 	firstPoint := points[0]
 
 	if grid[firstPoint] == 9 {
