@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"strconv"
 )
 
 func ReadFile(filename string) []string {
@@ -36,4 +37,17 @@ func MoveListElement[s ~[]E, E int | string](list s, from int, to int) s {
 	list = append(list[:to], append([]E{element}, list[to:]...)...)
 
 	return list
+}
+
+func Itoa(i int) string {
+	return strconv.Itoa(i)
+}
+
+func Atoi(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		log.Fatalf("Error converting string to int: %s", s)
+	}
+
+	return i
 }
