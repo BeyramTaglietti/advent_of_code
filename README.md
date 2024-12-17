@@ -6,3 +6,4 @@
 
 ## Languages I've used:
 - Golang
+- Gleam
