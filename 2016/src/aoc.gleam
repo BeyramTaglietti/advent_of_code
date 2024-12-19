@@ -1,6 +1,6 @@
 import birl
 import birl/duration
-import day8/solution
+import day9/solution
 import gleam/int
 import gleam/io
 import gleam/string
