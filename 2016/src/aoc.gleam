@@ -1,13 +1,13 @@
 import birl
 import birl/duration
-import day7/solution
+import day8/solution
 import gleam/int
 import gleam/io
 import gleam/string
 
 pub fn main() {
   let now = birl.now()
-  solution.solve_p2()
+  solution.solve_p1()
   let end = birl.now()
 
   birl.difference(end, now)
