@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"maps"
 	"strings"
+	"sync"
 )
 
 func SolveP1() {
@@ -14,15 +15,22 @@ func SolveP1() {
 	designs := parseDesigns(lines[2:])
 
 	possibleDesignsCount := 0
-
+	wg := sync.WaitGroup{}
+	wg.Add(len(designs))
+	mu := sync.Mutex{}
 	for _, design := range designs {
-
-		foundMatch := createDesign(design, towels, findMatches(design, towels, make(map[string]int)), make(map[string]int))
-
-		if len(foundMatch) > 0 {
-			possibleDesignsCount++
-		}
+		go func(d string, t map[string]bool) {
+			defer wg.Done()
+			foundMatch := createDesign(d, t, findMatches(d, t, make(map[string]int)), 0)
+			if foundMatch > 0 {
+				mu.Lock()
+				possibleDesignsCount++
+				mu.Unlock()
+			}
+		}(design, towels)
 	}
+
+	wg.Wait()
 
 	fmt.Println("we can create", possibleDesignsCount, "designs")
 }
@@ -34,18 +42,26 @@ func SolveP2() {
 	towels := parseTowels(lines[0])
 	designs := parseDesigns(lines[2:])
 
-	possibleDesignsCount := 0
+	wg := sync.WaitGroup{}
+	wg.Add(len(designs))
 
+	mu := sync.Mutex{}
+
+	possibleDesignsCount := 0
 	for _, design := range designs {
 
-		foundMatch := createDesign(design, towels, findMatches(design, towels, make(map[string]int)), make(map[string]int))
+		go func(d string, t map[string]bool) {
+			defer wg.Done()
+			foundMatch := createDesign(d, t, findMatches(d, t, make(map[string]int)), 0)
 
-		if len(foundMatch) > 0 {
-			for _, v := range foundMatch {
-				possibleDesignsCount += v
-			}
-		}
+			mu.Lock()
+			possibleDesignsCount += foundMatch
+			mu.Unlock()
+		}(design, towels)
+
 	}
+
+	wg.Wait()
 
 	fmt.Println("we can create these designs in", possibleDesignsCount, "ways")
 }
@@ -69,10 +85,10 @@ func parseDesigns(lines []string) []string {
 	return designs
 }
 
-func createDesign(design string, towels map[string]bool, currentMatches map[string]int, valids map[string]int) map[string]int {
+func createDesign(design string, towels map[string]bool, currentMatches map[string]int, validsCount int) int {
 
 	if len(currentMatches) == 0 {
-		return valids
+		return validsCount
 	}
 
 	newMatches := make(map[string]int)
@@ -89,12 +105,12 @@ func createDesign(design string, towels map[string]bool, currentMatches map[stri
 
 	for k, v := range newMatches {
 		if k == design {
-			valids[k] = valids[k] + v
+			validsCount += v
 			delete(newMatches, k)
 		}
 	}
 
-	return createDesign(design, towels, newMatches, valids)
+	return createDesign(design, towels, newMatches, validsCount)
 }
 
 func findMatches(line string, towels map[string]bool, found map[string]int) map[string]int {
