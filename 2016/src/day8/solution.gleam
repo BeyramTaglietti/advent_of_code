@@ -8,7 +8,7 @@ import gleam/yielder
 import simplifile
 
 pub fn solve_p1() {
-  let size = #(50, 6)
+  let size = #(49, 5)
 
   let map_dict =
     list.range(0, size.0)
