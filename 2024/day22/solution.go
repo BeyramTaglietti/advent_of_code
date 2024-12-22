@@ -3,7 +3,6 @@ package day22
 import (
 	"aoc2024/utils"
 	"fmt"
-	"math"
 	"strconv"
 	"strings"
 	"sync"
@@ -24,7 +23,7 @@ func SolveP1() {
 
 		go func(line string) {
 			defer wg.Done()
-			result, _ := calculateResult(utils.Atoi(line), 1, 2000, []int{}, map[string]int{})
+			result, _ := calculateResult(utils.Atoi(line), 1, 2000, make([]int, 4, 4), map[string]int{})
 
 			mu.Lock()
 			sum += result
@@ -41,7 +40,7 @@ func SolveP1() {
 func SolveP2() {
 	lines := utils.ReadFile("./day22/input.txt")
 
-	full_sequences_map := map[string]int{}
+	full_sequences_map := make(map[string]int)
 
 	wg := sync.WaitGroup{}
 	wg.Add(len(lines))
@@ -52,7 +51,7 @@ func SolveP2() {
 
 		go func(line string) {
 			defer wg.Done()
-			_, sequences_map := calculateResult(utils.Atoi(line), 1, 2000, []int{}, map[string]int{})
+			_, sequences_map := calculateResult(utils.Atoi(line), 1, 2000, make([]int, 4, 4), map[string]int{})
 
 			mu.Lock()
 			for k, v := range sequences_map {
@@ -70,19 +69,20 @@ func SolveP2() {
 	fmt.Println("best sequence is", best_sequence, "with total amount of bananas", bananas_total_amount)
 }
 
-func getLastDigit(num int) int {
-	num_str := strconv.Itoa(num)
-	return utils.Atoi(string(num_str[len(num_str)-1]))
-}
+const (
+	moduloValue    = 16777216
+	mixMultiplier1 = 64
+	mixMultiplier2 = 2048
+)
 
 func calculateResult(secret_number, current_iteration, total_iterations int, previous_changes []int, sequences_map map[string]int) (res int, s_map map[string]int) {
 
-	new_secret_number := prune(mix(secret_number*64, secret_number))
-	new_secret_number = prune(mix(int(math.Floor(float64(new_secret_number)/32)), new_secret_number))
-	new_secret_number = prune(mix(new_secret_number*2048, new_secret_number))
+	new_secret_number := prune(mix(secret_number*mixMultiplier1, secret_number))
+	new_secret_number = prune(mix(new_secret_number/32, new_secret_number))
+	new_secret_number = prune(mix(new_secret_number*mixMultiplier2, new_secret_number))
 
-	previous_secret_number_last_digit := getLastDigit(secret_number)
-	new_secret_number_last_digit := getLastDigit(new_secret_number)
+	previous_secret_number_last_digit := secret_number % 10
+	new_secret_number_last_digit := new_secret_number % 10
 
 	addPattern := func(pattern []int, num int) {
 		sequence := listToString(pattern)
@@ -92,12 +92,15 @@ func calculateResult(secret_number, current_iteration, total_iterations int, pre
 		}
 	}
 
-	if len(previous_changes) != 4 {
-		previous_changes = append(previous_changes, new_secret_number_last_digit-previous_secret_number_last_digit)
+	diff := new_secret_number_last_digit - previous_secret_number_last_digit
+
+	if current_iteration <= 4 {
+		previous_changes[current_iteration-1] = diff
 	} else {
 		addPattern(previous_changes, previous_secret_number_last_digit)
 
-		previous_changes = append(previous_changes[1:], new_secret_number_last_digit-previous_secret_number_last_digit)
+		copy(previous_changes, previous_changes[1:])
+		previous_changes[3] = diff
 	}
 
 	if current_iteration == total_iterations {
@@ -109,9 +112,7 @@ func calculateResult(secret_number, current_iteration, total_iterations int, pre
 }
 
 func prune(num int) int {
-	const modulo_value int = 16777216
-
-	return int(math.Mod(float64(num), float64(modulo_value)))
+	return num & (moduloValue - 1)
 }
 
 func mix(num1, num2 int) int {
@@ -134,6 +135,7 @@ func findBestSequence(sequences_map map[string]int) (string, int) {
 
 func listToString(list []int) string {
 	var str strings.Builder
+	str.Grow(len(list))
 
 	for _, n := range list {
 		str.WriteString(strconv.Itoa(n))
