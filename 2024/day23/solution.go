@@ -27,6 +27,42 @@ func SolveP1() {
 
 }
 
+func SolveP2() {
+
+	lines := utils.ReadFile("./day23/input.txt")
+
+	connections := make(connection)
+
+	for _, line := range lines {
+		c1, c2 := parseConnection(line)
+		connections[c1] = append(connections[c1], c2)
+		connections[c2] = append(connections[c2], c1)
+	}
+
+	lan_parties := findLanParties2(connections)
+
+	valid_parties := make([]string, 0)
+
+	for k := range lan_parties {
+		if isValidParty(strings.Split(k, ","), connections) {
+			valid_parties = append(valid_parties, k)
+		}
+	}
+
+	largest_party_count := 0
+	largest_party := ""
+
+	for _, party := range valid_parties {
+		if len(strings.Split(party, ",")) > largest_party_count {
+			largest_party_count = len(strings.Split(party, ","))
+			largest_party = party
+		}
+	}
+
+	fmt.Println("largest party is", largest_party, "with", largest_party_count, "nodes")
+
+}
+
 func parseConnection(line string) (c1, c2 string) {
 	c1 = line[:2]
 	c2 = line[3:]
@@ -45,6 +81,20 @@ func findLanParties(connections connection) map[string]bool {
 					parties[listToString([]string{k, connection, node})] = true
 				}
 			}
+		}
+	}
+
+	return parties
+}
+
+func findLanParties2(connections connection) map[string]bool {
+	parties := make(map[string]bool)
+
+	for k, v := range connections {
+
+		for _, connection := range v {
+			common_nodes := findCommonConnections(k, connection, connections)
+			parties[listToString(append([]string{k, connection}, common_nodes...))] = true
 		}
 	}
 
@@ -95,4 +145,22 @@ func countStartsWith(parties map[string]bool, start string) int {
 	}
 
 	return count
+}
+
+// qp,tc,td,wh,yn
+func isValidParty(party []string, connections connection) bool {
+	for idx, node := range party {
+
+		rest := slices.Concat(party[:idx], party[idx+1:])
+
+		for _, connection := range rest {
+			if !slices.Contains(connections[node], connection) {
+
+				return false
+			}
+		}
+
+	}
+
+	return true
 }
