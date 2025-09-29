@@ -1,7 +1,7 @@
 package main
 
 import (
-	"2018/day11"
+	"2018/day13"
 	"fmt"
 	"time"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	now := time.Now()
 
-	day11.SolveP1()
+	day13.SolveP2()
 
 	elapsed := time.Since(now)
 
