@@ -16,7 +16,6 @@ type block string
 const (
 	clay    block = "#"
 	water   block = "~"
-	sand    block = "."
 	source  block = "+"
 	wetSand block = "|"
 )
