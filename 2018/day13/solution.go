@@ -96,7 +96,7 @@ func (c *cart) turnCorner(cornerTurn turn) {
 		}
 	case down:
 		if cornerTurn == forward {
-			c.going = left
+								  c.going = left
 		} else {
 			c.going = right
 		}
@@ -125,7 +125,7 @@ const (
 	backward turn = "\\"
 )
 
-type point struct {
+																														 type point struct {
 	y, x int
 }
 
