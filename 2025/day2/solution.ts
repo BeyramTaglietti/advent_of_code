@@ -44,14 +44,6 @@ export function solveP2(lines: Array<string>): number {
   return total;
 }
 
-const chunk = (str: string, size: number) => {
-  const out = [];
-  for (let i = 0; i < str.length; i += size) {
-    out.push(str.slice(i, i + size));
-  }
-  return out;
-};
-
 const parseLine = (line: string): Array<range> => {
   const ranges = line.split(",");
   return ranges.map((x) => {
